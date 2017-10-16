@@ -160,7 +160,7 @@ gameState.main.prototype = {
 		spriteLevelNumber.animations.frame = this.currentLevel;
 		this.spritesLevelNumbers = new Array();
 		this.spritesLevelNumbers.push(spriteLevelNumber);
-		
+
 		// Bouton play
 		this.buttonPlay = game.add.sprite(0, 1200 * ratio, 'buttonPlay');
 		this.buttonPlay.scale = {x: ratio, y:ratio};
@@ -228,7 +228,7 @@ gameState.main.prototype = {
 		for(var j = 0; j < this.spritesScoreNumbers.length; j++)
 			this.spritesScoreNumbers[j].kill();
 		this.spritesScoreNumbers = new Array();
-		
+
 		// On recrée les sprites qui vont composer le score
 		this.spritesScoreNumbers = this.createSpritesNumbers(this.currentScore, 'numbers', 440 * ratio, 1);
 	},
@@ -261,7 +261,7 @@ gameState.main.prototype = {
 		for(var i = 0; i < this.spritesLevelNumbers.length; i++) {
 			game.add.tween(this.spritesLevelNumbers[i]).to({alpha: 1}, 300, Phaser.Easing.Linear.None,true);
 		}
-		game.add.tween(this.level).to({alpha: 1}, 300, Phaser.Easing.Linear.None,true);	
+		game.add.tween(this.level).to({alpha: 1}, 300, Phaser.Easing.Linear.None,true);
 		var self = this;
 		setTimeout(function() {
 			for(var i = 0; i < self.spritesLevelNumbers.length; i++) {
@@ -319,7 +319,7 @@ gameState.main.prototype = {
 			if(Math.random() * 4 <= 1)
 				this.tree.create(37 * ratio, this.stump.y - this.HEIGHT_TRUNK * (this.tree.length + 1), trunks[Math.floor(Math.random() * 2)]);
 			// 3 chances sur 4 d'avoir une branche
-			else	
+			else
 				this.tree.create(37 * ratio, this.stump.y - this.HEIGHT_TRUNK * (this.tree.length + 1), branchs[Math.floor(Math.random() * 2)]);
 		}
 		else
@@ -330,7 +330,7 @@ gameState.main.prototype = {
 
 	listener: function(directionTemp) {
 		if(this.canCut) {
-			
+
 			if(!GAME_START)
 				GAME_START = true;
 
@@ -407,7 +407,7 @@ gameState.main.prototype = {
 		this.soundTheme.stop();
 
 		var self = this;
-		
+
 		// Disparition de la barre de temps
 		game.add.tween(this.timeBar).to({y: this.timeBar.y - 550 * ratio}, 150, Phaser.Easing.Linear.None,true);
 		game.add.tween(this.timeContainer).to({y: this.timeContainer.y - 550 * ratio}, 150, Phaser.Easing.Linear.None,true);
@@ -430,6 +430,9 @@ gameState.main.prototype = {
 	},
 
 	gameFinish: function() {
+    var device = this.getParameterByName('device');
+    if (device) this.executeOnDevice(device, this.currentScore);
+
 		// Panneau Game Over
 		this.gameOver = game.add.sprite(0, 0, 'gameOver');
 		this.gameOver.scale = {x: ratio, y:ratio};
@@ -485,7 +488,7 @@ gameState.main.prototype = {
 		var widthNumbers = 0;
 
 		var arraySpritesNumbers = new Array();
-		
+
 		// on met en forme le nombre avec les sprites
 		for(var i = 0; i < digits.length; i++) {
 			var spaceBetweenNumbers = 0;
@@ -511,7 +514,46 @@ gameState.main.prototype = {
 		numbersGroup.x = game.width / 2 - numbersGroup.width / 2;
 
 		return arraySpritesNumbers;
-	}
+	},
+
+  getParameterByName: function (name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+  },
+
+  executeOnDevice: function (device, score) {
+    switch (device) {
+      case 'android':
+        this.executeOnAndroid(score);
+        break;
+      case 'ios':
+        this.executeOnIOS(score);
+        break;
+      default:
+        break;
+    }
+  },
+
+  executeOnAndroid: function (score) {
+    try {
+      mobile.gameOver(score);
+    } catch (err) {
+      console.log("The android context does not exist");
+    }
+  },
+
+  executeOnIOS: function (score) {
+    try {
+      webkit.messageHandlers.callbackHandler.gameOver(score);
+    } catch (err) {
+      console.log("The ios context does not exist");
+    }
+  }
 };
 
 
