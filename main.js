@@ -1,6 +1,6 @@
 // Taille de l'écran
 const SAFE_ZONE_WIDTH = 1080;
-const SAFE_ZONE_HEIGHT = 1775;
+const SAFE_ZONE_HEIGHT = 1920;
 var ratioWH =  SAFE_ZONE_WIDTH / SAFE_ZONE_HEIGHT;
 
 var widthTemp, heightTemp;
@@ -27,7 +27,7 @@ var GAME_START = false;
 var GAME_OVER = false;
 
 // Phaser
-var game = new Phaser.Game(width, height, Phaser.AUTO, 'timberman');
+var game = new Phaser.Game(width, height, Phaser.AUTO, '');
 game.transparent = true;
 
 // On déclare un objet qui contiendra les états "load" et "main"
@@ -68,7 +68,7 @@ gameState.load.prototype = {
 		/**** AUDIO *****/
 		game.load.audio('soundCut', ['sons/cut.ogg']);
 		game.load.audio('soundMenu', ['sons/menu.ogg']);
-		game.load.audio('soundTheme', ['sons/theme.ogg']);
+		// game.load.audio('soundTheme', ['sons/theme.ogg']);
 		game.load.audio('soundDeath', ['sons/death.ogg']);
 	},
 
@@ -82,12 +82,11 @@ gameState.main.prototype = {
 	create: function() {
 		game.physics.startSystem(Phaser.Physics.ARCADE);
 
-		// On fait en sorte que le jeu se redimensionne selon la taille de l'écran (Pour les PC)
-		game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
-		game.scale.setShowAll();
-		window.addEventListener('resize', function () {
-			game.scale.refresh();
-		});
+		// This scale type works better in phones but wrong in PC
+		game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;
+		game.scale.pageAlignHorizontally = true;
+		game.scale.pageAlignVertically = true;
+		game.scale.setScreenSize(true);
 
 		// création de l'arrière-plan
 		this.background = game.add.sprite(0, 0, 'background');
@@ -169,8 +168,8 @@ gameState.main.prototype = {
 
 		/**** AUDIO ****/
 
-		this.soundTheme = game.add.audio('soundTheme', 0.5, true);
-		this.soundTheme.play();
+		// this.soundTheme = game.add.audio('soundTheme', 0.5, true);
+		// this.soundTheme.play();
 		this.soundMenu = game.add.audio('soundMenu', 1);
 		this.soundDeath = game.add.audio('soundDeath', 1);
 		this.soundCut = game.add.audio('soundCut', 1);
@@ -404,7 +403,7 @@ gameState.main.prototype = {
 
 		game.input.onDown.removeAll();
 		this.soundDeath.play();
-		this.soundTheme.stop();
+		// this.soundTheme.stop();
 
 		var self = this;
 
