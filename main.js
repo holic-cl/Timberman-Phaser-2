@@ -68,7 +68,7 @@ gameState.load.prototype = {
 		/**** AUDIO *****/
 		game.load.audio('soundCut', ['sons/cut.ogg']);
 		game.load.audio('soundMenu', ['sons/menu.ogg']);
-		game.load.audio('soundTheme', ['sons/theme.ogg']);
+		// game.load.audio('soundTheme', ['sons/theme.ogg']);
 		game.load.audio('soundDeath', ['sons/death.ogg']);
 	},
 
@@ -168,8 +168,8 @@ gameState.main.prototype = {
 
 		/**** AUDIO ****/
 
-		this.soundTheme = game.add.audio('soundTheme', 0.5, true);
-		this.soundTheme.play();
+		// this.soundTheme = game.add.audio('soundTheme', 0.5, true);
+		// this.soundTheme.play();
 		this.soundMenu = game.add.audio('soundMenu', 1);
 		this.soundDeath = game.add.audio('soundDeath', 1);
 		this.soundCut = game.add.audio('soundCut', 1);
@@ -403,7 +403,7 @@ gameState.main.prototype = {
 
 		game.input.onDown.removeAll();
 		this.soundDeath.play();
-		this.soundTheme.stop();
+		// this.soundTheme.stop();
 
 		var self = this;
 
